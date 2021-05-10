@@ -1,0 +1,17 @@
+.new-entry {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-rows: 1fr 2fr 1fr auto;
+
+    .tag-input {
+    }
+
+    .text-input {
+    }
+
+    .date-input {
+    }
+
+    .submit-button {
+    }
+}

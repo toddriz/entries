@@ -1,0 +1,31 @@
+.entries {
+    .entry {
+        background-color: white;
+        margin: 8px;
+        border-radius: 4px;
+        padding: 8px;
+
+        .tags {
+            display: grid;
+            grid-auto-flow: column;
+            padding-bottom: 4px;
+            border-bottom: 1px solid lightgray;
+
+            .tag {
+                display: grid;
+
+                color: burlywood;
+            }
+        }
+
+        .text {
+            padding: 8px 0;
+            border-bottom: 1px solid lightgray;
+        }
+
+        .date {
+            color: slategray;
+            padding-top: 4px;
+        }
+    }
+}
