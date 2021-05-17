@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import { getEntries } from '../mocks/entries';
-import { formatTagName } from '../utils/format';
+import { getEntries } from '../../mocks/entries';
+import { formatTagName } from '../../utils/format';
 
 import './Entries.scss';
 
-export default function Entries() {
+function Entries() {
     const entries = getEntries();
 
     const renderTags = (tags) => {
@@ -19,7 +19,7 @@ export default function Entries() {
                 })}
             </div>
         );
-    }
+    };
 
     const renderEntry = (entry) => {
         return (
@@ -29,7 +29,7 @@ export default function Entries() {
                 <div className="date">Date: {dayjs(entry.timestamp).format('MMM DD, YYYY')}</div>
             </div>
         );
-    }
+    };
 
     return (
         <div className="entries">
@@ -37,3 +37,5 @@ export default function Entries() {
         </div>
     );
 }
+
+export default Entries;
