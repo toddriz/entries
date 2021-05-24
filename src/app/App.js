@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import firebase from 'firebase';
+import 'firebase/auth';
 
 import Entries from './entries/Entries';
 import NewEntry from './newEntry/NewEntry';
@@ -67,22 +68,6 @@ function Footer() {
 }
 
 function AuthenticatedApp({ onLogout }) {
-    // const { isLoading, error, data } = useQuery('repoData', () =>
-    //     fetch('https://api.github.com/repos/tannerlinsley/react-query').then(
-    //         (res) => res.json()
-    //     )
-    // );
-
-    // if (isLoading) {
-    //     return 'Loading...';
-    // }
-
-    // if (error) {
-    //     console.log(data);
-
-    //     return 'An error has occurred: ' + error.message;
-    // }
-
     return (
         <div className="jornal">
             <QueryClientProvider client={queryClient}>
@@ -107,18 +92,10 @@ function AuthenticatedApp({ onLogout }) {
     );
 }
 
-function Home() {
-
-}
-
 function App() {
     const logout = () => firebase.auth().signOut();
 
-    const [user, isLoading, error] = useAuthState();
-
-    console.log('user', user);
-    console.log('isLoading', isLoading);
-    console.log('error', error);
+    const [user] = useAuthState();
 
     return user ?
         <AuthenticatedApp onLogout={logout} />

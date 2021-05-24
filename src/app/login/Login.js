@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import firebase from 'firebase';
 
-import './Login.scss';
 import useLogInWithEmailAndPassword from '../../hooks/useLogInWithEmailAndPassword';
-import userCreateUserWithEmailAndPassword from '../../hooks/userCreateUserWithEmailAndPassword';
+import useCreateUserWithEmailAndPassword from '../../hooks/userCreateUserWithEmailAndPassword';
+import './Login.scss';
 
 const FORM_STATES = {
     LOGIN: 'LOGIN',
@@ -22,17 +22,15 @@ function Login() {
 
     const [
         logInWithEmailAndPassword,
-        loggedInUser,
         isLoggingIn,
         loginError,
     ] = useLogInWithEmailAndPassword();
 
     const [
         createUserWithEmailAndPassword,
-        createdUser,
         isCreatingUser,
         createUserError,
-    ] = userCreateUserWithEmailAndPassword();
+    ] = useCreateUserWithEmailAndPassword();
 
     useEffect(() => {
         if (isLoggingIn && didAlertUserOfLoginError) {
@@ -42,7 +40,7 @@ function Login() {
         if (loginError && !didAlertUserOfLoginError) {
             alert(loginError);
         }
-    });
+    }, [isLoggingIn, loginError, didAlertUserOfLoginError]);
 
     useEffect(() => {
         if (isCreatingUser && didAlertUserOfCreateUserError) {
@@ -52,7 +50,7 @@ function Login() {
         if (createUserError && didAlertUserOfCreateUserError) {
             alert(createUserError);
         }
-    });
+    }, [isCreatingUser, didAlertUserOfCreateUserError, createUserError]);
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
@@ -83,6 +81,7 @@ function Login() {
             case FORM_STATES.LOGIN:
                 buttons.push(
                     <button
+                        key="register"
                         className="form-button register-button"
                         type="button"
                         onClick={() => setFormState(FORM_STATES.REGISTER)}
@@ -93,6 +92,7 @@ function Login() {
 
                 buttons.push(
                     <button
+                        key="forgotPassword"
                         className="form-button forgot-password-button"
                         type="button"
                         onClick={() => setFormState(FORM_STATES.FORGOT_PASSWORD)}
@@ -102,11 +102,11 @@ function Login() {
                 );
 
                 break;
-
             case FORM_STATES.REGISTER:
                 submitButtonLabel = 'register';
                 buttons.push(
                     <button
+                        key="back"
                         className="form-button back-button"
                         type="button"
                         onClick={() => setFormState(FORM_STATES.LOGIN)}
@@ -114,12 +114,12 @@ function Login() {
                         back
                     </button>
                 );
-
                 break;
             case FORM_STATES.FORGOT_PASSWORD:
                 submitButtonLabel = 'submit';
                 buttons.push(
                     <button
+                        key="back"
                         className="form-button back-button"
                         type="button"
                         onClick={() => setFormState(FORM_STATES.LOGIN)}
@@ -129,13 +129,13 @@ function Login() {
                 );
 
                 break;
-
             default:
                 break;
         }
 
         buttons.push(
             <button
+                key="submit"
                 className="form-button submit-button"
                 type="submit"
             >
@@ -144,6 +144,7 @@ function Login() {
         );
 
         buttons.push(<button
+            key="quickLogin"
             className="quick-button"
             type="button"
             onClick={() => logInWithEmailAndPassword('toddriz@gmail.com', 'Gruffly2^Direness^Tracing')}

@@ -1,35 +1,29 @@
-
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import firebase from 'firebase';
 
-export default (auth = firebase.auth()) => {
+const useLoginInWithEmailAndPassword = (auth = firebase.auth()) => {
     const [error, setError] = useState();
-    const [
-        loggedInUser,
-        setLoggedInUser,
-    ] = useState();
     const [loading, setLoading] = useState(false);
 
-    const logInWithEmailAndPassword = async (
+    const logInWithEmailAndPassword = useCallback(async (
         email,
         password
     ) => {
         setLoading(true);
         try {
-            const user = await auth.signInWithEmailAndPassword(email, password);
-            setLoggedInUser(user);
+            await auth.signInWithEmailAndPassword(email, password);
             setLoading(false);
         } catch (err) {
             setError(err);
             setLoading(false);
         }
-    };
+    }, [auth]);
 
-    const resArray = [
+    return useMemo(() => [
         logInWithEmailAndPassword,
-        loggedInUser,
         loading,
         error,
-    ];
-    return useMemo(() => resArray, [resArray]);
+    ], [logInWithEmailAndPassword, loading, error]);
 };
+
+export default useLoginInWithEmailAndPassword;

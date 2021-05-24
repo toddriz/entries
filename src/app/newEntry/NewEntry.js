@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import _ from 'lodash';
-import { addEntry } from '../../mocks/entries';
-import { formatTagName } from '../../utils/format';
-import './NewEntry.scss';
 import dayjs from 'dayjs';
+import _ from 'lodash';
+import firebase from 'firebase';
+
+import { formatTagName } from '../../utils/format';
+import useAuthState from '../../hooks/useAuthState';
+
+import './NewEntry.scss';
 
 const tags = [
     'story',
@@ -12,34 +15,46 @@ const tags = [
     'food',
     'idea',
     'habit',
-    'exercise'
+    'exercise',
+    'quote'
 ];
 
 export default function NewEntry(props) {
     const history = useHistory();
+    const [user] = useAuthState();
 
     const [state, setState] = useState({
         tags: [],
         text: '',
-        date: dayjs().format('YYYY-MM-DD')
+        date: dayjs(),
+        userId: user.uid
     });
 
-    const onChangeTags = ({ target }) => {
-        const { value } = target;
+    const addEntry = () => {
+        const firestore = firebase.firestore();
 
-        setState({ ...state, tags: _.xor([value], state.tags) });
+        firestore.collection('entries').add({
+            ...state,
+            date: dayjs(state.date).toDate(),
+        });
+    };
+
+    const onChangeTags = ({ target }) => {
+        const { value: tag } = target;
+
+        setState({ ...state, tags: _.xor([tag], state.tags) });
     };
 
     const onChangeText = ({ target }) => {
-        const { value } = target;
+        const { value: text } = target;
 
-        setState({ ...state, text: value });
+        setState({ ...state, text });
     };
 
     const onChangeDate = ({ target }) => {
-        const { value } = target;
+        const { value: date } = target;
 
-        setState({ ...state, date: value });
+        setState({ ...state, date });
     };
 
     const onSubmit = (event) => {
@@ -49,7 +64,7 @@ export default function NewEntry(props) {
             return;
         }
 
-        addEntry(state.text, state.tags, state.date);
+        addEntry();
         history.push('/');
     };
 
@@ -83,7 +98,7 @@ export default function NewEntry(props) {
         return (
             <label className="date-input">
                 Date
-                <input type="date" value={state.date} onChange={onChangeDate}></input>
+                <input type="datetime-local" value={dayjs(state.date).format('YYYY-MM-DDTHH:mm')} max={dayjs().toDate()} onChange={onChangeDate}></input>
             </label>
         );
     };
